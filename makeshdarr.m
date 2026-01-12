@@ -27,6 +27,7 @@ switch ( filetype( 1 : 3 ) )
         % Matlab version of Bellhop has a different ordering
         Arr.A     = permute( Arr.A,     [ 2 3 1 ] );
         Arr.delay = permute( Arr.delay, [ 2 3 1 ] );
+        Arr.phase = permute( Arr.phase, [ 2 3 1 ] );
         Arr.Narr      = Arr.Narr';
     case ( 'bin' )
         [ Arr, Pos ] = read_arrivals_bin( ARRFIL );

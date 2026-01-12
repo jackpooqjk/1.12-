@@ -206,7 +206,7 @@ H= hp(1)*repmat( exp(-1j*2*pi*f_vec*taumean(1)) , 1, Lt);
 
 %% Find small-scale model parameters:
 
-sig_delp= sqrt(1/c^2*((2*sin(theta)).^2).*(ns*sig2s+nb*sig2b)); 
+sig_delp= sqrt(1/c^2*((2*sin(theta)).^2).*(ns.*sig2s+nb.*sig2b));
 rho_p= exp(-((2*pi*f_vec).^2) * (sig_delp.^2/2));
 rho_p_bb= exp(-(2*pi*(f_vec-fmin).^2) * (sig_delp.^2/2));
 

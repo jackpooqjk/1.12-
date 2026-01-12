@@ -26,7 +26,7 @@ end
 %       %     alpha = alpha / 8.6858896; % Nepers / m
 %       
 %       % Updated formula from JKPS Eq. 1.34
-%       alpha = 3.3d-3 + 0.11 * f2 / ( 1.0 + f2 ) + 44.0 * f2 / ( 4100.0 + f2 ) + 3d-4* f2;   % dB/km
+%       alpha = 3.3e-3 + 0.11 * f2 / ( 1.0 + f2 ) + 44.0 * f2 / ( 4100.0 + f2 ) + 3e-4* f2;   % dB/km
 %    case ( 'F' )   % Francois-Garrison (untested)
 %       T  = 20
 %       S  = 35

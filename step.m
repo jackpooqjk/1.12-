@@ -36,8 +36,8 @@ cnn1_csq1 = crr1 * Tray1(2)^2 - 2.0 * crz1 * Tray1(1) * Tray1(2) + czz1 * Tray1(
 h = reducestep( SSP, x0, Tray1, Layer0, c1, xTop, nTop, xBot, nBot,  rTopSeg, rBotSeg, deltas, h );
 
 % use blend of f' based on proportion of a full step used.
-w1 = h / ( 2.0d0 * halfh );
-w0 = 1.0d0 - w1;
+w1 = h / ( 2.0 * halfh );
+w0 = 1.0 - w1;
 
 % you could absorb h into w0, w1 but I leave as follows for clarity, hoping compiler is smart enough to optimize
 x2     = x0    + h * ( w0 * c0 * Tray0     + w1 * c1 * Tray1     );
