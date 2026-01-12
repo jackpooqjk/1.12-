@@ -5,7 +5,30 @@ This document lists all bugs found and fixed in the MATLAB acoustic channel simu
 
 ## Bugs Fixed
 
-### 1. Missing Phase Field in Arrivals Structure (CRITICAL)
+### 1. Matrix/Element-wise Multiplication Error (CRITICAL - NEW)
+**Files affected:** `channel_simulator.m`
+**Severity:** CRITICAL - Runtime error during channel simulation
+
+**Description:**
+Line 209 used matrix multiplication `*` instead of element-wise multiplication `.*` when multiplying vector arrays `ns` and `nb` with scalar values `sig2s` and `sig2b`. This caused MATLAB to throw an error: "整数只能与同类的整数或双精度标量值组合使用" (Integers can only be combined with integers of the same type or double scalar values).
+
+**Error message:**
+```
+错误使用  .* 
+整数只能与同类的整数或双精度标量值组合使用。
+出错 channel_simulator (第 209 行)
+sig_delp= sqrt(1/c^2*((2*sin(theta)).^2).*(ns*sig2s+nb*sig2b));
+```
+
+**Impact:**
+- Runtime error when running channel_simulator
+- Prevents small-scale model parameter calculation
+- Complete blocker for channel simulation execution
+
+**Fix:** 
+Changed `ns*sig2s+nb*sig2b` to `ns.*sig2s+nb.*sig2b` to use element-wise multiplication on line 209.
+
+### 2. Missing Phase Field in Arrivals Structure (CRITICAL)
 **Files affected:** `bellhopM.m`, `AddArr.m`, `makeshdarr.m`
 **Severity:** CRITICAL - Runtime error during channel simulation
 
@@ -30,7 +53,7 @@ The `Arr` structure used to store acoustic arrivals was missing the `phase` fiel
 3. Store phase when adding arrivals in `AddArr.m` lines 38, 46, 53
 4. Added phase permutation in `makeshdarr.m` line 30
 
-### 2. Fortran-style Double Precision Notation (CRITICAL)
+### 3. Fortran-style Double Precision Notation (CRITICAL)
 **Files affected:** `step.m`, `crci.m`, `reducestep.m`, `scalep.m`
 **Severity:** HIGH - Code may not run correctly in MATLAB
 
@@ -50,7 +73,7 @@ The code used Fortran-style double precision notation (`d0`, `d-`, `d+`) which i
 
 **Fix:** Changed all Fortran notation to MATLAB standard notation using `e`.
 
-### 3. Undefined Variables in Reflection Code (CRITICAL)
+### 4. Undefined Variables in Reflection Code (CRITICAL)
 **File affected:** `reflect.m`
 **Severity:** HIGH - Runtime error when using file-based boundary conditions
 
@@ -72,7 +95,7 @@ case ( 'F' )                 % file
 
 **Fix:** Added error message indicating feature is not implemented and requires RefCO function.
 
-### 4. Unnecessary Transpose Operator (FIXED)
+### 5. Unnecessary Transpose Operator (FIXED)
 **File affected:** `reflect.m`
 **Severity:** LOW - Cosmetic issue
 
@@ -90,7 +113,7 @@ gamma1SQ = ( omega / c ).^ 2 - GK^ 2;    // After
 
 ## Known Issues (Not Fixed)
 
-### 5. Missing External Dependency
+### 6. Missing External Dependency
 **File affected:** `channel_simulator.m`
 **Severity:** HIGH - Code will fail at runtime
 
@@ -112,7 +135,7 @@ end
 
 **Recommendation:** Include the Takagi factorization implementation or add dependency documentation.
 
-### 6. Potential Division by Zero
+### 7. Potential Division by Zero
 **File affected:** `reflect.m`
 **Severity:** MEDIUM - Edge case handling
 
@@ -142,6 +165,7 @@ RM = Tg ./ Th;                 % Division by Th
 
 ## Files Modified
 
+- `channel_simulator.m` - Fixed element-wise multiplication operators
 - `bellhopM.m` - Added Arr.phase field initialization  
 - `AddArr.m` - Added phase calculation and storage
 - `makeshdarr.m` - Added phase permutation
@@ -158,4 +182,5 @@ RM = Tg ./ Th;                 % Division by Th
 1. `53f8ecc` - Fix Fortran-style notation bugs in MATLAB code
 2. `10138dc` - Fix undefined variables bug in reflect.m
 3. `4510b67` - Remove unnecessary transpose operator in reflect.m
-4. Latest - Fix missing Arr.phase field causing runtime error
+4. `f9a1cd4` - Fix missing Arr.phase field causing runtime error
+5. Latest - Fix element-wise multiplication error in channel_simulator.m
