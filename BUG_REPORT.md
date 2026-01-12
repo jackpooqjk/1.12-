@@ -5,7 +5,32 @@ This document lists all bugs found and fixed in the MATLAB acoustic channel simu
 
 ## Bugs Fixed
 
-### 1. Fortran-style Double Precision Notation (CRITICAL)
+### 1. Missing Phase Field in Arrivals Structure (CRITICAL)
+**Files affected:** `bellhopM.m`, `AddArr.m`, `makeshdarr.m`
+**Severity:** CRITICAL - Runtime error during channel simulation
+
+**Description:**
+The `Arr` structure used to store acoustic arrivals was missing the `phase` field. The code in `AddArr.m` line 24 attempted to access `Arr.phase(id, ir, Nt)` which didn't exist, causing a "Unrecognized field name 'phase'" error. Additionally, the variable `Phase` was never defined or calculated in `AddArr.m`.
+
+**Error message:**
+```
+无法识别的字段名称 "phase"。
+出错 AddArr (第 24 行)
+     abs( Arr.phase( id, ir, Nt ) - Phase ) < PhaseTol )
+```
+
+**Impact:**
+- Runtime error when running bellhopM → channel_simulator
+- Prevents arrival calculations from working
+- Critical blocker for channel simulation
+
+**Fix:** 
+1. Added `Arr.phase` initialization in `bellhopM.m` line 101
+2. Added phase calculation `Phase = omega * delay` in `AddArr.m`
+3. Store phase when adding arrivals in `AddArr.m` lines 38, 46, 53
+4. Added phase permutation in `makeshdarr.m` line 30
+
+### 2. Fortran-style Double Precision Notation (CRITICAL)
 **Files affected:** `step.m`, `crci.m`, `reducestep.m`, `scalep.m`
 **Severity:** HIGH - Code may not run correctly in MATLAB
 
@@ -25,7 +50,7 @@ The code used Fortran-style double precision notation (`d0`, `d-`, `d+`) which i
 
 **Fix:** Changed all Fortran notation to MATLAB standard notation using `e`.
 
-### 2. Undefined Variables in Reflection Code (CRITICAL)
+### 3. Undefined Variables in Reflection Code (CRITICAL)
 **File affected:** `reflect.m`
 **Severity:** HIGH - Runtime error when using file-based boundary conditions
 
@@ -47,9 +72,25 @@ case ( 'F' )                 % file
 
 **Fix:** Added error message indicating feature is not implemented and requires RefCO function.
 
+### 4. Unnecessary Transpose Operator (FIXED)
+**File affected:** `reflect.m`
+**Severity:** LOW - Cosmetic issue
+
+**Description:**
+Line 61 used `c'` (transpose of scalar) which is unconventional.
+
+**Code:**
+```matlab
+gamma1SQ = ( omega / c'  ).^ 2 - GK^ 2;  // Before
+gamma1SQ = ( omega / c ).^ 2 - GK^ 2;    // After
+```
+
+**Impact:** None - for real scalars, `c' == c`, but reduces clarity
+**Fix:** Removed unnecessary transpose operator.
+
 ## Known Issues (Not Fixed)
 
-### 3. Missing External Dependency
+### 5. Missing External Dependency
 **File affected:** `channel_simulator.m`
 **Severity:** HIGH - Code will fail at runtime
 
@@ -71,7 +112,7 @@ end
 
 **Recommendation:** Include the Takagi factorization implementation or add dependency documentation.
 
-### 4. Potential Division by Zero
+### 6. Potential Division by Zero
 **File affected:** `reflect.m`
 **Severity:** MEDIUM - Edge case handling
 
@@ -91,22 +132,6 @@ RM = Tg ./ Th;                 % Division by Th
 
 **Recommendation:** Add check for |Th| < epsilon and handle grazing case specially.
 
-### 5. Unconventional Notation (FIXED)
-**File affected:** `reflect.m`
-**Severity:** LOW - Cosmetic issue
-
-**Description:**
-Line 61 used `c'` (transpose of scalar) which is unconventional.
-
-**Code:**
-```matlab
-gamma1SQ = ( omega / c'  ).^ 2 - GK^ 2;  // Before
-gamma1SQ = ( omega / c ).^ 2 - GK^ 2;    // After
-```
-
-**Impact:** None - for real scalars, `c' == c`, but reduces clarity
-**Fix:** Removed unnecessary transpose operator.
-
 ## Testing Recommendations
 
 1. Test all fixed files with typical simulation parameters
@@ -117,15 +142,20 @@ gamma1SQ = ( omega / c ).^ 2 - GK^ 2;    // After
 
 ## Files Modified
 
+- `bellhopM.m` - Added Arr.phase field initialization  
+- `AddArr.m` - Added phase calculation and storage
+- `makeshdarr.m` - Added phase permutation
 - `step.m` - Fixed Fortran notation
 - `crci.m` - Fixed Fortran notation  
 - `reducestep.m` - Fixed Fortran notation
 - `scalep.m` - Fixed Fortran notation in comments
 - `reflect.m` - Fixed undefined variables, removed unnecessary transpose, added error handling
 - `.gitignore` - Added to ignore system files
+- `BUG_REPORT.md` - Comprehensive bug documentation
 
 ## Commits
 
 1. `53f8ecc` - Fix Fortran-style notation bugs in MATLAB code
 2. `10138dc` - Fix undefined variables bug in reflect.m
-3. Latest - Remove unnecessary transpose operator in reflect.m
+3. `4510b67` - Remove unnecessary transpose operator in reflect.m
+4. Latest - Fix missing Arr.phase field causing runtime error

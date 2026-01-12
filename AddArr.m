@@ -12,6 +12,9 @@ PhaseTol = 0.5;   % arrivals with essential the same phase are grouped into one
 Nt     = Arr.Narr( id, ir );    % # of arrivals
 NewRay = 1;
 
+% Calculate phase for current arrival
+Phase = omega * delay;
+
 % Is this the second bracketting ray of a pair?
 % If so, we want to combine the arrivals to conserve space.
 % (test this by seeing if the arrival time is close to the previous one)
@@ -32,6 +35,7 @@ if ( NewRay )
       if ( amp > Arr.A( id, ir, iArr ) )
          Arr.A(     id, ir, iArr ) = amp;  	 % amplitude
          Arr.delay( id, ir, iArr ) = delay;	 % delay time
+         Arr.phase( id, ir, iArr ) = Phase;	 % phase
          Arr.angle( id, ir, iArr ) = angle;	 % angle
       end
       
@@ -39,11 +43,13 @@ if ( NewRay )
       Arr.Narr(  id, ir         ) = Nt + 1;   % # of arrivals
       Arr.A(     id, ir, Nt + 1 ) = amp;		 % amplitude
       Arr.delay( id, ir, Nt + 1 ) = delay;	 % delay time
+      Arr.phase( id, ir, Nt + 1 ) = Phase;	 % phase
       Arr.angle( id, ir, Nt + 1 ) = angle;	 % angle
    end
 else   % second arrival of a bracketting pair; add in to existing slot
    ampTot = Arr.A( id, ir, Nt ) + amp;
    Arr.A(     id, ir, Nt ) =           Arr.A(   id, ir, Nt ) + amp;
    Arr.delay( id, ir, Nt ) = ( Arr.A( id, ir, Nt ) * Arr.delay( id, ir, Nt ) + amp * delay ) / ampTot;   % weighted sum
+   Arr.phase( id, ir, Nt ) = ( Arr.A( id, ir, Nt ) * Arr.phase( id, ir, Nt ) + amp * Phase ) / ampTot;   % weighted sum
    Arr.ang(   id, ir, Nt ) = angle;
 end

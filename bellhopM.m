@@ -98,6 +98,7 @@ if ( ismember( 'A', upper( Beam.RunType( 1 : 1 ) ) ) )
     
     Arr.A     = zeros( Pos.Nrz, Pos.Nrr, MxNarr );
     Arr.delay = zeros( Pos.Nrz, Pos.Nrr, MxNarr );
+    Arr.phase = zeros( Pos.Nrz, Pos.Nrr, MxNarr );
     Arr.angle = zeros( Pos.Nrz, Pos.Nrr, MxNarr );
     Arr.Narr  = zeros( Pos.Nrz, Pos.Nrr );
 else
