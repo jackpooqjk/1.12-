@@ -64,8 +64,8 @@ end
 h = min( [ h, hLayer, hTop, hBot, h4, h5 ] );   % step is limited by the smaller of an interface or bottom crossing
 %h = max( h, 1e4 * eps( deltas ) )   % make sure we make some motion
 
-if ( h < 1.0d-4 * deltas )   % is it taking an infinitesimal step?
-     h = 1.0d-5 * deltas;    % make sure we make some motion
+if ( h < 1.0e-4 * deltas )   % is it taking an infinitesimal step?
+     h = 1.0e-5 * deltas;    % make sure we make some motion
      %iSmallStepCtr = iSmallStepCtr + 1;   % keep a count of the number of sequential small steps
 else
      %iSmallStepCtr = 0;   % didn't do a small step so reset the counter

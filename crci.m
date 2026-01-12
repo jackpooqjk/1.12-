@@ -47,7 +47,7 @@ switch ( AttenUnit( 2 : 2 ) )
       %    alphaT = alphaT / 8.6858896; % Nepers / m
       
       % Updated formula from JKPS Eq. 1.34
-      Thorp  = 3.3d-3 + 0.11 * f2 / ( 1.0 + f2 ) + 44.0 * f2 / ( 4100.0 + f2 ) + 3d-4 * f2;   % dB/km
+      Thorp  = 3.3e-3 + 0.11 * f2 / ( 1.0 + f2 ) + 44.0 * f2 / ( 4100.0 + f2 ) + 3e-4 * f2;   % dB/km
       Thorp  = Thorp / 8685.8896; % Nepers / m
       alphaT = alphaT + Thorp;
    case ( 'F' )   % Francois-Garrison
