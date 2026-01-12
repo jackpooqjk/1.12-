@@ -58,7 +58,7 @@ switch ( BC )
         error( 'Boundary condition ''F'' (file) is not implemented. RefCO function is required.' );
     case ( 'A' )                 % half-space
         GK       = omega * Tg;   % wavenumber in direction parallel to bathymetry
-        gamma1SQ = ( omega / c'  ).^ 2 - GK^ 2;
+        gamma1SQ = ( omega / c ).^ 2 - GK^ 2;
         gamma2SQ = ( omega / cHS ) ^ 2 - GK^ 2;
         gamma1   = sqrt( -gamma1SQ );
         gamma2   = sqrt( -gamma2SQ );

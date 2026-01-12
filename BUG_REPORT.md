@@ -91,20 +91,21 @@ RM = Tg ./ Th;                 % Division by Th
 
 **Recommendation:** Add check for |Th| < epsilon and handle grazing case specially.
 
-### 5. Unconventional Notation
+### 5. Unconventional Notation (FIXED)
 **File affected:** `reflect.m`
 **Severity:** LOW - Cosmetic issue
 
 **Description:**
-Line 61 uses `c'` (transpose of scalar) which is unconventional but not incorrect.
+Line 61 used `c'` (transpose of scalar) which is unconventional.
 
 **Code:**
 ```matlab
-gamma1SQ = ( omega / c'  ).^ 2 - GK^ 2;
+gamma1SQ = ( omega / c'  ).^ 2 - GK^ 2;  // Before
+gamma1SQ = ( omega / c ).^ 2 - GK^ 2;    // After
 ```
 
-**Impact:** None - for real scalars, `c' == c`
-**Recommendation:** Remove unnecessary transpose for clarity.
+**Impact:** None - for real scalars, `c' == c`, but reduces clarity
+**Fix:** Removed unnecessary transpose operator.
 
 ## Testing Recommendations
 
@@ -120,10 +121,11 @@ gamma1SQ = ( omega / c'  ).^ 2 - GK^ 2;
 - `crci.m` - Fixed Fortran notation  
 - `reducestep.m` - Fixed Fortran notation
 - `scalep.m` - Fixed Fortran notation in comments
-- `reflect.m` - Fixed undefined variables, added error handling
+- `reflect.m` - Fixed undefined variables, removed unnecessary transpose, added error handling
 - `.gitignore` - Added to ignore system files
 
 ## Commits
 
 1. `53f8ecc` - Fix Fortran-style notation bugs in MATLAB code
 2. `10138dc` - Fix undefined variables bug in reflect.m
+3. Latest - Remove unnecessary transpose operator in reflect.m
