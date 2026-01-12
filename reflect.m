@@ -54,7 +54,8 @@ switch ( BC )
     case ( 'F' )                 % file
         theInt = RADDEG * abs( atan2( Th, Tg ) );   % angle of incidence (relative to normal to bathymetry)
         %[ theta, RefC, phi ] = RefCO( theInt, rInt, phiInt, Npts  )
-        ray( I ).Rfa = ray( I ).Rfa * rInt * exp( 1i * phiInt );
+        %ray( I ).Rfa = ray( I ).Rfa * rInt * exp( 1i * phiInt );
+        error( 'Boundary condition ''F'' (file) is not implemented. RefCO function is required.' );
     case ( 'A' )                 % half-space
         GK       = omega * Tg;   % wavenumber in direction parallel to bathymetry
         gamma1SQ = ( omega / c'  ).^ 2 - GK^ 2;
